@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Riya Sehgal - CS 180/280A</title>
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <main class="page">
+
+    <section class="intro-header">
+      <h1>CS 180/280A - Introduction to Computer Vision and Computational Photography</h1>
+      <p>This is my project portfolio.</p>
+    </section>
+
+
+    <nav class="project-nav">
+      <a href="#project0" class="project-tab active">Project 0</a>
+      <a href="#project1" class="project-tab">Project 1</a>
+    </nav>
+
+
+    <section class="project" id="project0">
+
+      <h2>Project 0: Becoming Friends with Your Camera</h2>
+
+      <div class="project-content">
+
+        <h3>Part 1: Selfie: The Wrong Way vs. The Right Way</h3>
+
+        <div class="image-grid part1-images">
+          <div class="figure">
+            <img src="./media/wrong-way.jpg" alt="Wrong way selfie">
+            <p class="caption">Wrong Way</p>
+          </div>
+
+          <div class="figure">
+            <img src="./media/right-way.jpg" alt="Right way selfie">
+            <p class="caption">Right Way</p>
+          </div>
+        </div>
+
+
+        <h3>Part 2: Architectural Perspective Compression</h3>
+
+        <div class="image-grid part2-images">
+          <div class="figure">
+            <img src="./media/far-zoom.jpg" alt="Far away zoomed in">
+            <p class="caption">Far + Zoom</p>
+          </div>
+
+          <div class="figure">
+            <img src="./media/close.jpg" alt="Close view">
+            <p class="caption">Close</p>
+          </div>
+        </div>
+
+
+        <h3>Part 3: The Dolly Zoom</h3>
+
+        <div class="dolly-zoom">
+          <img src="./media/dolly-zoom.gif" alt="Dolly zoom effect">
+          <p class="caption">My Nalgene, dolly zoomed</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <section class="project" id="project1">
+
+      <h2>Project 1: Images of the Russian Empire: Colorizing the <a href="https://www.loc.gov/collections/prokudin-gorskii/" target="_blank">Prokudin-Gorskii</a> photo collection</h2>
+
+      <div class="project-content">
+
+        <!-- Project 1 content goes here -->
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+    const sections = document.querySelectorAll(".project");
+    const tabs = document.querySelectorAll(".project-tab");
+
+    function updateActiveProject() {
+      let current = "";
+
+      sections.forEach(section => {
+        const top = section.offsetTop - 160;
+
+        if (window.scrollY >= top) {
+          current = section.id;
+        }
+      });
+
+      tabs.forEach(tab => {
+        tab.classList.remove("active");
+
+        if (tab.getAttribute("href") === "#" + current) {
+          tab.classList.add("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActiveProject);
+    updateActiveProject();
+  </script>
+
+</body>
+</html>
