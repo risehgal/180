@@ -4,14 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Riya Sehgal - CS 180/280A</title>
-
   <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-
   <main class="page">
 
     <section class="intro-header">
@@ -19,15 +16,12 @@
       <p>This is my project portfolio.</p>
     </section>
 
-
     <nav class="project-nav">
       <a href="#project0" class="project-tab active">Project 0</a>
       <a href="#project1" class="project-tab">Project 1</a>
     </nav>
 
-
     <section class="project" id="project0">
-
       <h2>Project 0: Becoming Friends with Your Camera</h2>
 
       <div class="project-content">
@@ -46,7 +40,6 @@
           </div>
         </div>
 
-
         <h3>Part 2: Architectural Perspective Compression</h3>
 
         <div class="image-grid part2-images">
@@ -61,7 +54,6 @@
           </div>
         </div>
 
-
         <h3>Part 3: The Dolly Zoom</h3>
 
         <div class="dolly-zoom">
@@ -70,21 +62,225 @@
         </div>
 
       </div>
-
     </section>
-
 
 
     <section class="project" id="project1">
 
-      <h2>Project 1: Images of the Russian Empire: Colorizing the <a href="https://www.loc.gov/collections/prokudin-gorskii/" target="_blank">Prokudin-Gorskii</a> photo collection</h2>
+      <h2>
+        Project 1: Images of the Russian Empire: Colorizing the
+        <a href="https://www.loc.gov/collections/prokudin-gorskii/" target="_blank">
+          Prokudin-Gorskii
+        </a>
+        photo collection
+      </h2>
 
       <div class="project-content">
 
-        <!-- Project 1 content goes here -->
+        <h3>Overview</h3>
+        <p>
+          The Prokudin-Gorskii scans contained three grayscale exposures stacked vertically in BGR order. I split each scan into blue, green, and red channels, used blue as the fixed reference, and aligned green and red to it separately. Before alignment, I cropped 10% from each edge to reduce the effect of the glass-plate borders. After finding the best shifts, I applied them to the original uncropped channels and stacked the result in RGB order.
+        </p>
+
+        <h3>Normalized Cross-Correlation (NCC)</h3>
+        <p>
+          I used normalized cross-correlation (NCC) to score each candidate alignment. For the shifted channel and blue reference, I subtracted the mean from each comparison region and computed <code>NCC = sum(A * B) / (||A|| ||B||)</code>. The shift with the highest NCC score was selected.
+        </p>
+        <p>
+          For each candidate, I shifted the moving channel with <code>np.roll</code>. I cropped the channels before alignment and excluded an additional margin when calculating NCC to reduce the effect of border and wrapped pixels on the score.
+        </p>
+
+        <h3>Single-Scale Alignment</h3>
+        <p>
+          For the smaller JPEG images, I used an exhaustive search over possible row and column displacements. Green and red were aligned independently to blue, and each candidate shift was evaluated using NCC. This same single-scale alignment procedure was also used at each level of the image pyramid. The shift with the highest score was then applied to the original channel. The offsets below are shown in <code>(row, column)</code> order.
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <img src="./1/cathedral_color.jpg" alt="Cathedral">
+            <p class="caption">
+              Cathedral<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/monastery_color.jpg" alt="Monastery">
+            <p class="caption">
+              Monastery<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/tobolsk_color.jpg" alt="Tobolsk">
+            <p class="caption">
+              Tobolsk<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+        </div>
+
+
+        <h3>Multi-Scale Pyramid Alignment</h3>
+        <p>
+          The TIFF images were much larger, so I used an image pyramid to make the alignment search more efficient. At each level, I blurred the channel with a 3 × 3 averaging filter and downsampled it by taking every other row and column. I continued until the image had been reduced to about 7% of its original size or another reduction would have made one dimension smaller than 64 pixels.
+        </p>
+        <p>
+          Alignment began at the smallest level with a search around <code>(0, 0)</code>. The initial search radius was based on 10% of the smaller image dimension and limited to between 5 and 15 pixels. At each higher-resolution level, I doubled the previous shift to account for the change in scale and refined it within a 4-pixel search radius. I repeated this separately for green and red, then applied the final shifts to the original uncropped channels.
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <img src="./1/church_color.jpg" alt="Church">
+            <p class="caption">
+              Church<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/emir_color.jpg" alt="Emir">
+            <p class="caption">
+              Emir<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/harvesters_color.jpg" alt="Harvesters">
+            <p class="caption">
+              Harvesters<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/icon_color.jpg" alt="Icon">
+            <p class="caption">
+              Icon<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/ilemselga_color.jpg" alt="Ilemtselga">
+            <p class="caption">
+              Ilemtselga<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/melons_color.jpg" alt="Melons">
+            <p class="caption">
+              Melons<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/religous_painting_color.jpg" alt="Religious Painting">
+            <p class="caption">
+              Religious Painting<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/self_portrait_color.jpg" alt="Self Portrait">
+            <p class="caption">
+              Self Portrait<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/siren_color.jpg" alt="Siren">
+            <p class="caption">
+              Siren<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/three_generations_color.jpg" alt="Three Generations">
+            <p class="caption">
+              Three Generations<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/wharf_color.jpg" alt="Wharf">
+            <p class="caption">
+              Wharf<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+        </div>
+
+
+        <h3>Alignment Failure</h3>
+        <p>
+          Emir was the least accurate result. The algorithm found a green shift of <code>(49, 24)</code> and a red shift of <code>(86, 43)</code>, but some color fringing remained around high-contrast edges. A likely cause was that corresponding regions had noticeably different intensities across the color exposures. Mean subtraction and normalization helped account for overall brightness differences, but raw-pixel NCC could still struggle when corresponding pixels differed substantially between color channels.
+        </p>
+
+        <h3>Images of My Choosing</h3>
+        <p>
+          I also applied the same alignment procedure to three additional images from the Prokudin-Gorskii collection.
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <img src="./1/railroad_color.jpg" alt="Railroad">
+            <p class="caption">
+              Railroad<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/towers_color.jpg" alt="Towers">
+            <p class="caption">
+              Towers<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/peonies_color.jpg" alt="Peonies">
+            <p class="caption">
+              Peonies<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+        </div>
 
       </div>
-
     </section>
 
   </main>
@@ -116,6 +312,51 @@
 
     window.addEventListener("scroll", updateActiveProject);
     updateActiveProject();
+  </script>
+
+
+  <!-- AUTO PROJECT 1 RESULTS -->
+  <script>
+    async function loadProject1Results() {
+      try {
+        const response = await fetch("./1/offsets.json?v=" + Date.now(), {
+          cache: "no-store"
+        });
+
+        if (!response.ok) return;
+
+        const offsets = await response.json();
+
+        document.querySelectorAll(
+          '#project1 .figure img[src^="./1/"]'
+        ).forEach(img => {
+          const originalSrc = img.getAttribute("src").split("?")[0];
+          const filename = originalSrc.split("/").pop();
+          const imageName = filename.replace("_color.jpg", "");
+
+          // Force browser to show newest output image
+          img.src = originalSrc + "?v=" + Date.now();
+
+          if (!offsets[imageName]) return;
+
+          const caption = img.closest(".figure").querySelector(".caption");
+          const title = caption.innerHTML.split("<br>")[0].trim();
+
+          const green = offsets[imageName].green;
+          const red = offsets[imageName].red;
+
+          caption.innerHTML =
+            title +
+            "<br>Green offset: [" + green[0] + ", " + green[1] + "]" +
+            "<br>Red offset: [" + red[0] + ", " + red[1] + "]";
+        });
+
+      } catch (error) {
+        console.log("Project 1 results are not available yet.");
+      }
+    }
+
+    loadProject1Results();
   </script>
 
 </body>

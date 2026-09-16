@@ -111,9 +111,9 @@ body {
   font-weight: 500;
 }
 
-.project p {
-  max-width: 800px;
-  margin: 0 0 16px;
+.project-content > p {
+  width: 100%;
+  max-width: none;margin: 0 0 16px;
 
   font-size: 16px;
   line-height: 1.55;
@@ -141,11 +141,13 @@ body {
 }
 
 .caption {
-  margin-top: 6px;
-
+  width: 100%;
+  margin: 6px 0 16px;
+  padding: 0;
   color: #47677D;
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 16px;
+  line-height: 1.55;
+  text-align: left;
 }
 
 
