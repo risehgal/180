@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Project 2: Fun with Filters and Frequencies!</title>
+
+    <link rel="stylesheet" href="../style.css">
+
+    <style>
+        .project-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .project-page h2 {
+            margin-top: 60px;
+        }
+
+        .project-page h3 {
+            margin-top: 40px;
+        }
+
+        .project-page h4 {
+            margin-top: 30px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .two {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .three {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .four {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .image-box {
+            text-align: center;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: auto;
+        }
+
+        .placeholder {
+            border: 1px dashed #999;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .caption {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .fill {
+            background: #f5f5f5;
+            padding: 12px 16px;
+            margin: 15px 0;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 800px) {
+            .two,
+            .three,
+            .four {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="project-page">
+
+    <p><a href="../index.html">← Back to CS180 Projects</a></p>
+
+    <h1>Project 2: Fun with Filters and Frequencies!</h1>
+    <p>CS 180: Introduction to Computer Vision and Computational Photography</p>
+
+    <p class="fill">
+        [OPTIONAL OVERVIEW: Briefly describe what this project explores.]
+    </p>
+
+
+    <!-- ====================================================== -->
+    <!-- PART 1 -->
+    <!-- ====================================================== -->
+
+    <h2>Part 1: Fun with Filters</h2>
+
+
+    <!-- ====================================================== -->
+    <!-- PART 1.1 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 1.1: Convolutions from Scratch</h3>
+
+    <p class="fill">
+        [EXPLAIN YOUR CONVOLUTION IMPLEMENTATIONS.]
+    </p>
+
+    <h4>Four-Loop Convolution</h4>
+
+    <pre><code>
+[PASTE FOUR-LOOP CONVOLUTION CODE]
+    </code></pre>
+
+
+    <h4>Two-Loop Convolution</h4>
+
+    <pre><code>
+[PASTE TWO-LOOP CONVOLUTION CODE]
+    </code></pre>
+
+
+    <h4>Comparison with scipy.signal.convolve2d</h4>
+
+    <p class="fill">
+        [WRITE: Explain how you compared both implementations with
+        scipy.signal.convolve2d and whether the outputs matched.]
+    </p>
+
+    <p class="fill">
+        [WRITE: Compare runtime between the four-loop version,
+        two-loop version, and scipy.signal.convolve2d.]
+    </p>
+
+    <p class="fill">
+        [WRITE: Explain how boundaries were handled using zero padding.]
+    </p>
+
+
+    <h4>9×9 Box Filter and Finite Difference Filters</h4>
+
+    <p class="fill">
+        [WRITE: Explain applying the 9×9 box filter, Dx, and Dy
+        to your grayscale self image.]
+    </p>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SELF ORIGINAL]
+            </div>
+            <div class="caption">Original grayscale image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SELF 9×9 BOX FILTER]
+            </div>
+            <div class="caption">9×9 box-filtered image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SELF X DERIVATIVE]
+            </div>
+            <div class="caption">Dx</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SELF Y DERIVATIVE]
+            </div>
+            <div class="caption">Dy</div>
+        </div>
+
+    </div>
+
+
+    <pre><code>
+[PASTE RELEVANT BOX FILTER / Dx / Dy CODE]
+    </code></pre>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 1.2 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 1.2: Finite Difference Operator</h3>
+
+    <p class="fill">
+        [EXPLAIN applying Dx and Dy to the cameraman image.]
+    </p>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [X DERIVATIVE]
+            </div>
+            <div class="caption">Partial derivative in x</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [Y DERIVATIVE]
+            </div>
+            <div class="caption">Partial derivative in y</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [GRADIENT MAGNITUDE]
+            </div>
+            <div class="caption">Gradient magnitude</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BINARY EDGE IMAGE]
+            </div>
+            <div class="caption">Binarized gradient magnitude</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: State the threshold you chose and explain the tradeoff
+        between suppressing noise and preserving real edges.]
+    </p>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 1.3 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 1.3: Derivative of Gaussian Filter</h3>
+
+    <h4>Gaussian Smoothing</h4>
+
+    <p class="fill">
+        [EXPLAIN how you constructed the 2D Gaussian filter using
+        cv2.getGaussianKernel and an outer product.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [GAUSSIAN BLURRED IMAGE]
+            </div>
+            <div class="caption">Gaussian blurred cameraman</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED X DERIVATIVE]
+            </div>
+            <div class="caption">Dx after smoothing</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED Y DERIVATIVE]
+            </div>
+            <div class="caption">Dy after smoothing</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED GRADIENT MAGNITUDE]
+            </div>
+            <div class="caption">Gradient magnitude after Gaussian smoothing</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED BINARY EDGES]
+            </div>
+            <div class="caption">Binarized edges after Gaussian smoothing</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: What differences do you see compared with the finite
+        difference result from Part 1.2?]
+    </p>
+
+
+    <h4>Derivative of Gaussian Filters</h4>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG X FILTER]
+            </div>
+            <div class="caption">DoG x filter</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG Y FILTER]
+            </div>
+            <div class="caption">DoG y filter</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG X DERIVATIVE]
+            </div>
+            <div class="caption">DoG x derivative</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG Y DERIVATIVE]
+            </div>
+            <div class="caption">DoG y derivative</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG GRADIENT MAGNITUDE]
+            </div>
+            <div class="caption">DoG gradient magnitude</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Verify that the DoG result matches Gaussian smoothing
+        followed by differentiation. Include your numerical difference.]
+    </p>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2 -->
+    <!-- ====================================================== -->
+
+    <h2>Part 2: Fun with Frequencies</h2>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2.1 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 2.1: Image Sharpening</h3>
+
+    <p class="fill">
+        [EXPLAIN: Gaussian blur extracts the low frequencies.
+        Subtracting the blurred image from the original isolates the
+        high frequencies. Adding a scaled version of those high
+        frequencies back to the original produces sharpening.]
+    </p>
+
+    <p class="fill">
+        [WRITE YOUR UNSHARP MASK DERIVATION / EQUATION.]
+    </p>
+
+
+    <h4>Taj Mahal</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ORIGINAL TAJ]
+            </div>
+            <div class="caption">Original Taj Mahal</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED TAJ]
+            </div>
+            <div class="caption">Blurred image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [TAJ HIGH FREQUENCIES]
+            </div>
+            <div class="caption">High-frequency component</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SHARPENED TAJ]
+            </div>
+            <div class="caption">Sharpened image</div>
+        </div>
+
+    </div>
+
+
+    <h4>Changing the Sharpening Amount</h4>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALPHA VALUE 1]
+            </div>
+            <div class="caption">α = [VALUE]</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALPHA VALUE 2]
+            </div>
+            <div class="caption">α = [VALUE]</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALPHA VALUE 3]
+            </div>
+            <div class="caption">α = [VALUE]</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Describe how changing alpha changes the result.]
+    </p>
+
+
+    <h4>Another Image</h4>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [OTHER ORIGINAL IMAGE]
+            </div>
+            <div class="caption">Original</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [OTHER SHARPENED IMAGE]
+            </div>
+            <div class="caption">Sharpened</div>
+        </div>
+
+    </div>
+
+
+    <h4>Blur Then Resharpen</h4>
+
+    <p class="fill">
+        [WRITE: Describe the sharp image you selected, how you blurred
+        it, and how you sharpened the blurred result.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ORIGINAL SHARP IMAGE]
+            </div>
+            <div class="caption">Original sharp image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED VERSION]
+            </div>
+            <div class="caption">Blurred image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [RESHARPENED VERSION]
+            </div>
+            <div class="caption">Resharpened image</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Compare the original sharp image with the sharpened
+        version of the blurred image.]
+    </p>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2.2 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 2.2: Hybrid Images</h3>
+
+    <p class="fill">
+        [EXPLAIN: A hybrid image combines the low-frequency content
+        of one image with the high-frequency content of another.]
+    </p>
+
+
+    <h4>Hybrid 1: Derek + Nutmeg</h4>
+
+    <p class="fill">
+        [WRITE: State your cutoff frequencies and explain your choices.]
+    </p>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DEREK ORIGINAL]
+            </div>
+            <div class="caption">Derek</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [NUTMEG ORIGINAL]
+            </div>
+            <div class="caption">Nutmeg</div>
+        </div>
+
+    </div>
+
+
+    <h4>Aligned Inputs</h4>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALIGNED DEREK]
+            </div>
+            <div class="caption">Aligned Derek</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALIGNED NUTMEG]
+            </div>
+            <div class="caption">Aligned Nutmeg</div>
+        </div>
+
+    </div>
+
+
+    <h4>Frequency Analysis</h4>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FFT INPUT 1]
+            </div>
+            <div class="caption">FFT of input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FFT FILTERED INPUT 1]
+            </div>
+            <div class="caption">FFT after filtering input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [LOW-PASS IMAGE]
+            </div>
+            <div class="caption">Low-pass result</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FFT INPUT 2]
+            </div>
+            <div class="caption">FFT of input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FFT FILTERED INPUT 2]
+            </div>
+            <div class="caption">FFT after filtering input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [HIGH-PASS IMAGE]
+            </div>
+            <div class="caption">High-pass result</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FINAL HYBRID FFT]
+            </div>
+            <div class="caption">FFT of hybrid image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FINAL DEREK + NUTMEG HYBRID]
+            </div>
+            <div class="caption">Final hybrid image</div>
+        </div>
+
+    </div>
+
+
+    <h4>Hybrid 2: [NAME]</h4>
+
+    <p class="fill">
+        [WRITE: Briefly describe these images and your cutoff choices.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 1]
+            </div>
+            <div class="caption">Input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 2]
+            </div>
+            <div class="caption">Input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [HYBRID 2]
+            </div>
+            <div class="caption">Hybrid result</div>
+        </div>
+
+    </div>
+
+
+    <h4>Hybrid 3: [NAME]</h4>
+
+    <p class="fill">
+        [WRITE: Briefly describe these images and your cutoff choices.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 1]
+            </div>
+            <div class="caption">Input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 2]
+            </div>
+            <div class="caption">Input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [HYBRID 3]
+            </div>
+            <div class="caption">Hybrid result</div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2.3 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 2.3: Gaussian and Laplacian Stacks</h3>
+
+    <p class="fill">
+        [EXPLAIN: Describe how you construct your Gaussian stack
+        without downsampling and how you construct the Laplacian stack.]
+    </p>
+
+
+    <h4>Gaussian Stack</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 0]</div>
+            <div class="caption">Level 0</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 1]</div>
+            <div class="caption">Level 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 2]</div>
+            <div class="caption">Level 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 3]</div>
+            <div class="caption">Level 3</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 4]</div>
+            <div class="caption">Level 4</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 5]</div>
+            <div class="caption">Level 5</div>
+        </div>
+
+    </div>
+
+
+    <h4>Laplacian Stack</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 0]</div>
+            <div class="caption">Level 0</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 1]</div>
+            <div class="caption">Level 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 2]</div>
+            <div class="caption">Level 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 3]</div>
+            <div class="caption">Level 3</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 4]</div>
+            <div class="caption">Level 4</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 5]</div>
+            <div class="caption">Level 5</div>
+        </div>
+
+    </div>
+
+
+    <h4>Recreation of Figure 3.42</h4>
+
+    <p class="fill">
+        [WRITE: Briefly explain the visualization.]
+    </p>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">[(a)]</div>
+            <div class="caption">(a)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(b)]</div>
+            <div class="caption">(b)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(c)]</div>
+            <div class="caption">(c)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(d)]</div>
+            <div class="caption">(d)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(e)]</div>
+            <div class="caption">(e)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(f)]</div>
+            <div class="caption">(f)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(g)]</div>
+            <div class="caption">(g)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(h)]</div>
+            <div class="caption">(h)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(i)]</div>
+            <div class="caption">(i)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(j)]</div>
+            <div class="caption">(j)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(k)]</div>
+            <div class="caption">(k)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(l)]</div>
+            <div class="caption">(l)</div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2.4 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 2.4: Multiresolution Blending</h3>
+
+    <p class="fill">
+        [EXPLAIN: Describe using the Laplacian stacks of the two
+        input images and a Gaussian stack of the mask to blend
+        the images across frequency bands.]
+    </p>
+
+
+    <h4>Apple + Orange</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [APPLE]
+            </div>
+            <div class="caption">Apple</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ORANGE]
+            </div>
+            <div class="caption">Orange</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [MASK]
+            </div>
+            <div class="caption">Mask</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ORAPLE]
+            </div>
+            <div class="caption">Final blend</div>
+        </div>
+
+    </div>
+
+
+    <h4>Custom Blend 1: [NAME]</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 1]
+            </div>
+            <div class="caption">Input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 2]
+            </div>
+            <div class="caption">Input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [MASK]
+            </div>
+            <div class="caption">Mask</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FINAL BLEND]
+            </div>
+            <div class="caption">Final blend</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Explain this result.]
+    </p>
+
+
+    <h4>Custom Blend 2: [NAME] — Irregular Mask</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 1]
+            </div>
+            <div class="caption">Input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 2]
+            </div>
+            <div class="caption">Input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [IRREGULAR MASK]
+            </div>
+            <div class="caption">Irregular mask</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FINAL BLEND]
+            </div>
+            <div class="caption">Final blend</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Explain the irregular mask and resulting blend.]
+    </p>
+
+
+    <h4>Multiresolution Process for Favorite Blend</h4>
+
+    <p class="fill">
+        [WRITE: Identify your favorite blend and explain the
+        Laplacian-stack visualization below.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [MASKED INPUT 1 STACK]
+            </div>
+            <div class="caption">Masked input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [MASKED INPUT 2 STACK]
+            </div>
+            <div class="caption">Masked input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [COMBINED STACK]
+            </div>
+            <div class="caption">Combined result</div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================================== -->
+    <!-- CONCLUSION -->
+    <!-- ====================================================== -->
+
+    <h2>What I Learned</h2>
+
+    <p class="fill">
+        [WRITE: What was the most important thing you learned from this project?]
+    </p>
+
+
+</div>
+
+</body>
+</html>
+EOFcat <<'EOF' > 2/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Project 2: Fun with Filters and Frequencies!</title>
+
+    <link rel="stylesheet" href="../style.css">
+
+    <style>
+        .project-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .project-page h2 {
+            margin-top: 60px;
+        }
+
+        .project-page h3 {
+            margin-top: 40px;
+        }
+
+        .project-page h4 {
+            margin-top: 30px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .two {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .three {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .four {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .image-box {
+            text-align: center;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: auto;
+        }
+
+        .placeholder {
+            border: 1px dashed #999;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .caption {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .fill {
+            background: #f5f5f5;
+            padding: 12px 16px;
+            margin: 15px 0;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 800px) {
+            .two,
+            .three,
+            .four {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="project-page">
+
+    <p><a href="../index.html">← Back to CS180 Projects</a></p>
+
+    <h1>Project 2: Fun with Filters and Frequencies!</h1>
+    <p>CS 180: Introduction to Computer Vision and Computational Photography</p>
+
+    <p class="fill">
+        [OPTIONAL OVERVIEW: Briefly describe what this project explores.]
+    </p>
+
+
+    <!-- ====================================================== -->
+    <!-- PART 1 -->
+    <!-- ====================================================== -->
+
+    <h2>Part 1: Fun with Filters</h2>
+
+
+    <!-- ====================================================== -->
+    <!-- PART 1.1 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 1.1: Convolutions from Scratch</h3>
+
+    <p class="fill">
+        [EXPLAIN YOUR CONVOLUTION IMPLEMENTATIONS.]
+    </p>
+
+    <h4>Four-Loop Convolution</h4>
+
+    <pre><code>
+[PASTE FOUR-LOOP CONVOLUTION CODE]
+    </code></pre>
+
+
+    <h4>Two-Loop Convolution</h4>
+
+    <pre><code>
+[PASTE TWO-LOOP CONVOLUTION CODE]
+    </code></pre>
+
+
+    <h4>Comparison with scipy.signal.convolve2d</h4>
+
+    <p class="fill">
+        [WRITE: Explain how you compared both implementations with
+        scipy.signal.convolve2d and whether the outputs matched.]
+    </p>
+
+    <p class="fill">
+        [WRITE: Compare runtime between the four-loop version,
+        two-loop version, and scipy.signal.convolve2d.]
+    </p>
+
+    <p class="fill">
+        [WRITE: Explain how boundaries were handled using zero padding.]
+    </p>
+
+
+    <h4>9×9 Box Filter and Finite Difference Filters</h4>
+
+    <p class="fill">
+        [WRITE: Explain applying the 9×9 box filter, Dx, and Dy
+        to your grayscale self image.]
+    </p>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SELF ORIGINAL]
+            </div>
+            <div class="caption">Original grayscale image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SELF 9×9 BOX FILTER]
+            </div>
+            <div class="caption">9×9 box-filtered image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SELF X DERIVATIVE]
+            </div>
+            <div class="caption">Dx</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SELF Y DERIVATIVE]
+            </div>
+            <div class="caption">Dy</div>
+        </div>
+
+    </div>
+
+
+    <pre><code>
+[PASTE RELEVANT BOX FILTER / Dx / Dy CODE]
+    </code></pre>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 1.2 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 1.2: Finite Difference Operator</h3>
+
+    <p class="fill">
+        [EXPLAIN applying Dx and Dy to the cameraman image.]
+    </p>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [X DERIVATIVE]
+            </div>
+            <div class="caption">Partial derivative in x</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [Y DERIVATIVE]
+            </div>
+            <div class="caption">Partial derivative in y</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [GRADIENT MAGNITUDE]
+            </div>
+            <div class="caption">Gradient magnitude</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BINARY EDGE IMAGE]
+            </div>
+            <div class="caption">Binarized gradient magnitude</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: State the threshold you chose and explain the tradeoff
+        between suppressing noise and preserving real edges.]
+    </p>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 1.3 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 1.3: Derivative of Gaussian Filter</h3>
+
+    <h4>Gaussian Smoothing</h4>
+
+    <p class="fill">
+        [EXPLAIN how you constructed the 2D Gaussian filter using
+        cv2.getGaussianKernel and an outer product.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [GAUSSIAN BLURRED IMAGE]
+            </div>
+            <div class="caption">Gaussian blurred cameraman</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED X DERIVATIVE]
+            </div>
+            <div class="caption">Dx after smoothing</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED Y DERIVATIVE]
+            </div>
+            <div class="caption">Dy after smoothing</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED GRADIENT MAGNITUDE]
+            </div>
+            <div class="caption">Gradient magnitude after Gaussian smoothing</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED BINARY EDGES]
+            </div>
+            <div class="caption">Binarized edges after Gaussian smoothing</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: What differences do you see compared with the finite
+        difference result from Part 1.2?]
+    </p>
+
+
+    <h4>Derivative of Gaussian Filters</h4>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG X FILTER]
+            </div>
+            <div class="caption">DoG x filter</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG Y FILTER]
+            </div>
+            <div class="caption">DoG y filter</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG X DERIVATIVE]
+            </div>
+            <div class="caption">DoG x derivative</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG Y DERIVATIVE]
+            </div>
+            <div class="caption">DoG y derivative</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DoG GRADIENT MAGNITUDE]
+            </div>
+            <div class="caption">DoG gradient magnitude</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Verify that the DoG result matches Gaussian smoothing
+        followed by differentiation. Include your numerical difference.]
+    </p>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2 -->
+    <!-- ====================================================== -->
+
+    <h2>Part 2: Fun with Frequencies</h2>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2.1 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 2.1: Image Sharpening</h3>
+
+    <p class="fill">
+        [EXPLAIN: Gaussian blur extracts the low frequencies.
+        Subtracting the blurred image from the original isolates the
+        high frequencies. Adding a scaled version of those high
+        frequencies back to the original produces sharpening.]
+    </p>
+
+    <p class="fill">
+        [WRITE YOUR UNSHARP MASK DERIVATION / EQUATION.]
+    </p>
+
+
+    <h4>Taj Mahal</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ORIGINAL TAJ]
+            </div>
+            <div class="caption">Original Taj Mahal</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED TAJ]
+            </div>
+            <div class="caption">Blurred image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [TAJ HIGH FREQUENCIES]
+            </div>
+            <div class="caption">High-frequency component</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [SHARPENED TAJ]
+            </div>
+            <div class="caption">Sharpened image</div>
+        </div>
+
+    </div>
+
+
+    <h4>Changing the Sharpening Amount</h4>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALPHA VALUE 1]
+            </div>
+            <div class="caption">α = [VALUE]</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALPHA VALUE 2]
+            </div>
+            <div class="caption">α = [VALUE]</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALPHA VALUE 3]
+            </div>
+            <div class="caption">α = [VALUE]</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Describe how changing alpha changes the result.]
+    </p>
+
+
+    <h4>Another Image</h4>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [OTHER ORIGINAL IMAGE]
+            </div>
+            <div class="caption">Original</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [OTHER SHARPENED IMAGE]
+            </div>
+            <div class="caption">Sharpened</div>
+        </div>
+
+    </div>
+
+
+    <h4>Blur Then Resharpen</h4>
+
+    <p class="fill">
+        [WRITE: Describe the sharp image you selected, how you blurred
+        it, and how you sharpened the blurred result.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ORIGINAL SHARP IMAGE]
+            </div>
+            <div class="caption">Original sharp image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [BLURRED VERSION]
+            </div>
+            <div class="caption">Blurred image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [RESHARPENED VERSION]
+            </div>
+            <div class="caption">Resharpened image</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Compare the original sharp image with the sharpened
+        version of the blurred image.]
+    </p>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2.2 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 2.2: Hybrid Images</h3>
+
+    <p class="fill">
+        [EXPLAIN: A hybrid image combines the low-frequency content
+        of one image with the high-frequency content of another.]
+    </p>
+
+
+    <h4>Hybrid 1: Derek + Nutmeg</h4>
+
+    <p class="fill">
+        [WRITE: State your cutoff frequencies and explain your choices.]
+    </p>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [DEREK ORIGINAL]
+            </div>
+            <div class="caption">Derek</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [NUTMEG ORIGINAL]
+            </div>
+            <div class="caption">Nutmeg</div>
+        </div>
+
+    </div>
+
+
+    <h4>Aligned Inputs</h4>
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALIGNED DEREK]
+            </div>
+            <div class="caption">Aligned Derek</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ALIGNED NUTMEG]
+            </div>
+            <div class="caption">Aligned Nutmeg</div>
+        </div>
+
+    </div>
+
+
+    <h4>Frequency Analysis</h4>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FFT INPUT 1]
+            </div>
+            <div class="caption">FFT of input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FFT FILTERED INPUT 1]
+            </div>
+            <div class="caption">FFT after filtering input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [LOW-PASS IMAGE]
+            </div>
+            <div class="caption">Low-pass result</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FFT INPUT 2]
+            </div>
+            <div class="caption">FFT of input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FFT FILTERED INPUT 2]
+            </div>
+            <div class="caption">FFT after filtering input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [HIGH-PASS IMAGE]
+            </div>
+            <div class="caption">High-pass result</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid two">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FINAL HYBRID FFT]
+            </div>
+            <div class="caption">FFT of hybrid image</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FINAL DEREK + NUTMEG HYBRID]
+            </div>
+            <div class="caption">Final hybrid image</div>
+        </div>
+
+    </div>
+
+
+    <h4>Hybrid 2: [NAME]</h4>
+
+    <p class="fill">
+        [WRITE: Briefly describe these images and your cutoff choices.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 1]
+            </div>
+            <div class="caption">Input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 2]
+            </div>
+            <div class="caption">Input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [HYBRID 2]
+            </div>
+            <div class="caption">Hybrid result</div>
+        </div>
+
+    </div>
+
+
+    <h4>Hybrid 3: [NAME]</h4>
+
+    <p class="fill">
+        [WRITE: Briefly describe these images and your cutoff choices.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 1]
+            </div>
+            <div class="caption">Input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 2]
+            </div>
+            <div class="caption">Input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [HYBRID 3]
+            </div>
+            <div class="caption">Hybrid result</div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2.3 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 2.3: Gaussian and Laplacian Stacks</h3>
+
+    <p class="fill">
+        [EXPLAIN: Describe how you construct your Gaussian stack
+        without downsampling and how you construct the Laplacian stack.]
+    </p>
+
+
+    <h4>Gaussian Stack</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 0]</div>
+            <div class="caption">Level 0</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 1]</div>
+            <div class="caption">Level 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 2]</div>
+            <div class="caption">Level 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 3]</div>
+            <div class="caption">Level 3</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 4]</div>
+            <div class="caption">Level 4</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 5]</div>
+            <div class="caption">Level 5</div>
+        </div>
+
+    </div>
+
+
+    <h4>Laplacian Stack</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 0]</div>
+            <div class="caption">Level 0</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 1]</div>
+            <div class="caption">Level 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 2]</div>
+            <div class="caption">Level 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 3]</div>
+            <div class="caption">Level 3</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 4]</div>
+            <div class="caption">Level 4</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[LEVEL 5]</div>
+            <div class="caption">Level 5</div>
+        </div>
+
+    </div>
+
+
+    <h4>Recreation of Figure 3.42</h4>
+
+    <p class="fill">
+        [WRITE: Briefly explain the visualization.]
+    </p>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">[(a)]</div>
+            <div class="caption">(a)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(b)]</div>
+            <div class="caption">(b)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(c)]</div>
+            <div class="caption">(c)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(d)]</div>
+            <div class="caption">(d)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(e)]</div>
+            <div class="caption">(e)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(f)]</div>
+            <div class="caption">(f)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(g)]</div>
+            <div class="caption">(g)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(h)]</div>
+            <div class="caption">(h)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(i)]</div>
+            <div class="caption">(i)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(j)]</div>
+            <div class="caption">(j)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(k)]</div>
+            <div class="caption">(k)</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">[(l)]</div>
+            <div class="caption">(l)</div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PART 2.4 -->
+    <!-- ====================================================== -->
+
+    <h3>Part 2.4: Multiresolution Blending</h3>
+
+    <p class="fill">
+        [EXPLAIN: Describe using the Laplacian stacks of the two
+        input images and a Gaussian stack of the mask to blend
+        the images across frequency bands.]
+    </p>
+
+
+    <h4>Apple + Orange</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [APPLE]
+            </div>
+            <div class="caption">Apple</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ORANGE]
+            </div>
+            <div class="caption">Orange</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [MASK]
+            </div>
+            <div class="caption">Mask</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [ORAPLE]
+            </div>
+            <div class="caption">Final blend</div>
+        </div>
+
+    </div>
+
+
+    <h4>Custom Blend 1: [NAME]</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 1]
+            </div>
+            <div class="caption">Input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 2]
+            </div>
+            <div class="caption">Input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [MASK]
+            </div>
+            <div class="caption">Mask</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FINAL BLEND]
+            </div>
+            <div class="caption">Final blend</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Explain this result.]
+    </p>
+
+
+    <h4>Custom Blend 2: [NAME] — Irregular Mask</h4>
+
+    <div class="grid four">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 1]
+            </div>
+            <div class="caption">Input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [INPUT 2]
+            </div>
+            <div class="caption">Input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [IRREGULAR MASK]
+            </div>
+            <div class="caption">Irregular mask</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [FINAL BLEND]
+            </div>
+            <div class="caption">Final blend</div>
+        </div>
+
+    </div>
+
+    <p class="fill">
+        [WRITE: Explain the irregular mask and resulting blend.]
+    </p>
+
+
+    <h4>Multiresolution Process for Favorite Blend</h4>
+
+    <p class="fill">
+        [WRITE: Identify your favorite blend and explain the
+        Laplacian-stack visualization below.]
+    </p>
+
+    <div class="grid three">
+
+        <div class="image-box">
+            <div class="placeholder">
+                [MASKED INPUT 1 STACK]
+            </div>
+            <div class="caption">Masked input 1</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [MASKED INPUT 2 STACK]
+            </div>
+            <div class="caption">Masked input 2</div>
+        </div>
+
+        <div class="image-box">
+            <div class="placeholder">
+                [COMBINED STACK]
+            </div>
+            <div class="caption">Combined result</div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================================== -->
+    <!-- CONCLUSION -->
+    <!-- ====================================================== -->
+
+    <h2>What I Learned</h2>
+
+    <p class="fill">
+        [WRITE: What was the most important thing you learned from this project?]
+    </p>
+
+
+</div>
+
+</body>
+</html>

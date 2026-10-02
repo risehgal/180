@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riya Sehgal - CS 180/280A</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <main class="page">
+
+    <section class="intro-header">
+      <h1>CS 180/280A - Introduction to Computer Vision and Computational Photography</h1>
+      <p>This is my project portfolio.</p>
+    </section>
+
+    <nav class="project-nav">
+      <a href="#project0" class="project-tab active">Project 0</a>
+      <a href="#project1" class="project-tab">Project 1</a>
+      <a href="#project2" class="project-tab">Project 2</a>
+    </nav>
+
+    <section class="project" id="project0">
+      <h2>Project 0: Becoming Friends with Your Camera</h2>
+
+      <div class="project-content">
+
+        <h3>Part 1: Selfie: The Wrong Way vs. The Right Way</h3>
+
+        <div class="image-grid part1-images">
+          <div class="figure">
+            <img src="./media/wrong-way.jpg" alt="Wrong way selfie">
+            <p class="caption">Wrong Way</p>
+          </div>
+
+          <div class="figure">
+            <img src="./media/right-way.jpg" alt="Right way selfie">
+            <p class="caption">Right Way</p>
+          </div>
+        </div>
+
+        <h3>Part 2: Architectural Perspective Compression</h3>
+
+        <div class="image-grid part2-images">
+          <div class="figure">
+            <img src="./media/far-zoom.jpg" alt="Far away zoomed in">
+            <p class="caption">Far + Zoom</p>
+          </div>
+
+          <div class="figure">
+            <img src="./media/close.jpg" alt="Close view">
+            <p class="caption">Close</p>
+          </div>
+        </div>
+
+        <h3>Part 3: The Dolly Zoom</h3>
+
+        <div class="dolly-zoom">
+          <img src="./media/dolly-zoom.gif" alt="Dolly zoom effect">
+          <p class="caption">My Nalgene, dolly zoomed</p>
+        </div>
+
+      </div>
+    </section>
+
+
+    <section class="project" id="project1">
+
+      <h2>
+        Project 1: Images of the Russian Empire: Colorizing the
+        <a href="https://www.loc.gov/collections/prokudin-gorskii/" target="_blank">
+          Prokudin-Gorskii
+        </a>
+        photo collection
+      </h2>
+
+      <div class="project-content">
+
+        <h3>Overview</h3>
+        <p>
+          The Prokudin-Gorskii scans contained three grayscale exposures stacked vertically in BGR order. I split each scan into blue, green, and red channels, used blue as the fixed reference, and aligned green and red to it separately. Before alignment, I cropped 10% from each edge to reduce the effect of the glass-plate borders. After finding the best shifts, I applied them to the original uncropped channels and stacked the result in RGB order.
+        </p>
+
+        <h3>Normalized Cross-Correlation (NCC)</h3>
+        <p>
+          I used normalized cross-correlation (NCC) to score each candidate alignment. For the shifted channel and blue reference, I subtracted the mean from each comparison region and computed <code>NCC = sum(A * B) / (||A|| ||B||)</code>. The shift with the highest NCC score was selected.
+        </p>
+        <p>
+          For each candidate, I shifted the moving channel with <code>np.roll</code>. I cropped the channels before alignment and excluded an additional margin when calculating NCC to reduce the effect of border and wrapped pixels on the score.
+        </p>
+
+        <h3>Single-Scale Alignment</h3>
+        <p>
+          For the smaller JPEG images, I used an exhaustive search over possible row and column displacements. Green and red were aligned independently to blue, and each candidate shift was evaluated using NCC. This same single-scale alignment procedure was also used at each level of the image pyramid. The shift with the highest score was then applied to the original channel. The offsets below are shown in <code>(row, column)</code> order.
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <img src="./1/cathedral_color.jpg" alt="Cathedral">
+            <p class="caption">
+              Cathedral<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/monastery_color.jpg" alt="Monastery">
+            <p class="caption">
+              Monastery<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/tobolsk_color.jpg" alt="Tobolsk">
+            <p class="caption">
+              Tobolsk<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+        </div>
+
+
+        <h3>Multi-Scale Pyramid Alignment</h3>
+        <p>
+          The TIFF images were much larger, so I used an image pyramid to make the alignment search more efficient. At each level, I blurred the channel with a 3 × 3 averaging filter and downsampled it by taking every other row and column. I continued until the image had been reduced to about 7% of its original size or another reduction would have made one dimension smaller than 64 pixels.
+        </p>
+        <p>
+          Alignment began at the smallest level with a search around <code>(0, 0)</code>. The initial search radius was based on 10% of the smaller image dimension and limited to between 5 and 15 pixels. At each higher-resolution level, I doubled the previous shift to account for the change in scale and refined it within a 4-pixel search radius. I repeated this separately for green and red, then applied the final shifts to the original uncropped channels.
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <img src="./1/church_color.jpg" alt="Church">
+            <p class="caption">
+              Church<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/emir_color.jpg" alt="Emir">
+            <p class="caption">
+              Emir<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/harvesters_color.jpg" alt="Harvesters">
+            <p class="caption">
+              Harvesters<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/icon_color.jpg" alt="Icon">
+            <p class="caption">
+              Icon<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/ilemselga_color.jpg" alt="Ilemtselga">
+            <p class="caption">
+              Ilemtselga<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/melons_color.jpg" alt="Melons">
+            <p class="caption">
+              Melons<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/religous_painting_color.jpg" alt="Religious Painting">
+            <p class="caption">
+              Religious Painting<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/self_portrait_color.jpg" alt="Self Portrait">
+            <p class="caption">
+              Self Portrait<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/siren_color.jpg" alt="Siren">
+            <p class="caption">
+              Siren<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/three_generations_color.jpg" alt="Three Generations">
+            <p class="caption">
+              Three Generations<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/wharf_color.jpg" alt="Wharf">
+            <p class="caption">
+              Wharf<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+        </div>
+
+
+        <h3>Alignment Failure</h3>
+        <p>
+          Emir was the least accurate result. The algorithm found a green shift of <code>(49, 24)</code> and a red shift of <code>(86, 43)</code>, but some color fringing remained around high-contrast edges. A likely cause was that corresponding regions had noticeably different intensities across the color exposures. Mean subtraction and normalization helped account for overall brightness differences, but raw-pixel NCC could still struggle when corresponding pixels differed substantially between color channels.
+        </p>
+
+        <h3>Images of My Choosing</h3>
+        <p>
+          I also applied the same alignment procedure to three additional images from the Prokudin-Gorskii collection.
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <img src="./1/railroad_color.jpg" alt="Railroad">
+            <p class="caption">
+              Railroad<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/towers_color.jpg" alt="Towers">
+            <p class="caption">
+              Towers<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+          <div class="figure">
+            <img src="./1/peonies_color.jpg" alt="Peonies">
+            <p class="caption">
+              Peonies<br>
+              Green offset: [x, y]<br>
+              Red offset: [x, y]
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <section class="project" id="project2">
+
+      <h2>Project 2: Fun with Filters and Frequencies!</h2>
+
+      <div class="project-content">
+
+
+        <h3>Part 1.1: Convolutions from Scratch</h3>
+
+        <p>
+          I implemented convolution in two ways. My first implementation uses
+          four nested loops: two loops iterate over each output pixel, while
+          the other two iterate over every element of the filter. My second
+          implementation uses only two loops over the image and uses NumPy
+          operations to multiply and sum each local image region with the
+          filter.
+        </p>
+
+        <p>
+          In both implementations, I flip the kernel before applying it and
+          add zero padding around the input image. The amount of padding is
+          chosen so that the output has the same dimensions as the original
+          image. Pixels near the image boundary therefore use zeros wherever
+          the filter extends beyond the original image.
+        </p>
+
+
+        <h4>Four-Loop Convolution</h4>
+
+        <pre><code>def convolve_four_loops(image, kernel):
+    flipped_kernel = np.flip(kernel)
+    kernel_rows = len(kernel)
+    kernel_cols = len(kernel[0])
+
+    pad_top = kernel_rows // 2
+    pad_bottom = kernel_rows - 1 - pad_top
+    pad_left = kernel_cols // 2
+    pad_right = kernel_cols - 1 - pad_left
+
+    img_same = np.pad(
+        image,
+        ((pad_top, pad_bottom), (pad_left, pad_right)),
+        mode='constant',
+        constant_values=0
+    )
+
+    new_img = np.zeros((len(image), len(image[0])))
+
+    for row in range(len(image)):
+        for col in range(len(image[0])):
+            total = 0
+            for filter_row in range(kernel_rows):
+                for filter_col in range(kernel_cols):
+                    total += (
+                        img_same[row + filter_row, col + filter_col]
+                        * flipped_kernel[filter_row, filter_col]
+                    )
+            new_img[row, col] = total
+
+    return new_img</code></pre>
+
+
+        <h4>Two-Loop Convolution</h4>
+
+        <pre><code>def convolve_two_loops(image, kernel):
+    flipped_kernel = np.flip(kernel)
+
+    kernel_rows = len(kernel)
+    kernel_cols = len(kernel[0])
+
+    pad_top = kernel_rows // 2
+    pad_bottom = kernel_rows - 1 - pad_top
+    pad_left = kernel_cols // 2
+    pad_right = kernel_cols - 1 - pad_left
+
+    img_same = np.pad(
+        image,
+        ((pad_top, pad_bottom), (pad_left, pad_right)),
+        mode='constant',
+        constant_values=0
+    )
+
+    new_img = np.zeros((len(image), len(image[0])))
+
+    for row in range(len(image)):
+        for col in range(len(image[0])):
+            neighborhood = img_same[
+                row:row + kernel_rows,
+                col:col + kernel_cols
+            ]
+            new_img[row, col] = np.sum(
+                neighborhood * flipped_kernel
+            )
+
+    return new_img</code></pre>
+
+
+        <h4>Comparison with scipy.signal.convolve2d</h4>
+
+        <p>
+          I compared both implementations against
+          <code>scipy.signal.convolve2d</code> using the same kernel,
+          zero-filled boundaries, and <code>mode="same"</code>. I used
+          <code>np.allclose</code> to compare the resulting arrays, and both
+          implementations matched the SciPy result.
+        </p>
+
+        <p>
+          The four-loop implementation is the slowest because every individual
+          filter multiplication and addition is performed inside Python loops.
+          The two-loop implementation is faster because the operations within
+          each neighborhood are handled by NumPy. SciPy's
+          <code>convolve2d</code> is much faster than either implementation
+          because the convolution is performed by optimized library code.
+        </p>
+
+
+        <h4>9 × 9 Box Filter and Finite Difference Filters</h4>
+
+        <p>
+          I converted an image of myself to grayscale and created a 9 × 9 box
+          filter with every entry equal to <code>1/81</code>. Convolving with
+          this filter replaces each pixel with an average of its surrounding
+          neighborhood, producing a blurred image. I also convolved the image
+          with the finite difference filters
+          <code>Dx = [-1, 1]</code> and
+          <code>Dy = [-1, 1]^T</code> to measure intensity changes in the two
+          directions.
+        </p>
+
+        <pre><code>D_x = np.array([[-1, 1]])
+D_y = np.array([[-1], [1]])
+
+box_filter = np.ones((9, 9)) / 81
+
+self_blurred = convolve_two_loops(self_image, box_filter)
+self_x = convolve_two_loops(self_image, D_x)
+self_y = convolve_two_loops(self_image, D_y)</code></pre>
+
+
+        <div class="image-grid four">
+
+          <div class="figure">
+            <img src="./2/1.1/self_original.png" alt="Original grayscale self image">
+            <p class="caption">Original grayscale image</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.1/self_box_filter.png" alt="Self image after 9 by 9 box filter">
+            <p class="caption">9 × 9 box filter</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.1/self_x_derivative.png" alt="Self image x derivative">
+            <p class="caption">Dx</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.1/self_y_derivative.png" alt="Self image y derivative">
+            <p class="caption">Dy</p>
+          </div>
+
+        </div>
+
+
+
+        <h3>Part 1.2: Finite Difference Operator</h3>
+
+        <p>
+          I convolved the cameraman image with the finite difference filters
+          <code>Dx = [-1, 1]</code> and <code>Dy = [-1, 1]^T</code>
+          to measure intensity changes in the x and y directions. I then
+          computed the gradient magnitude at each pixel using
+          <code>sqrt(Dx² + Dy²)</code>, which combines the responses from
+          both directions into a single measure of edge strength.
+        </p>
+
+        <div class="image-grid four">
+
+          <div class="figure">
+            <img src="./2/1.2/x_derivative.png" alt="Cameraman x derivative">
+            <p class="caption">Partial derivative in x</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.2/y_derivative.png" alt="Cameraman y derivative">
+            <p class="caption">Partial derivative in y</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.2/gradient_magnitude.png" alt="Cameraman gradient magnitude">
+            <p class="caption">Gradient magnitude</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.2/binary_edges.png" alt="Thresholded cameraman edges">
+            <p class="caption">Binary edges, threshold = 60</p>
+          </div>
+
+        </div>
+
+        <p>
+          To produce the binary edge image, I thresholded the gradient
+          magnitude at 60. This keeps the stronger edges around the
+          photographer, camera, and tripod while suppressing much of the
+          weaker texture in the ground and background. The tradeoff is that
+          some weaker edges are removed along with the noise.
+        </p>
+
+
+
+        <h3>Part 1.3: Derivative of Gaussian Filter</h3>
+
+        <p>
+          The finite difference results from Part 1.2 contain a lot of
+          high-frequency detail and noise. To reduce this, I first smoothed
+          the cameraman image with a Gaussian filter. I created a 1D Gaussian
+          using <code>cv2.getGaussianKernel(9, 2)</code> and took its outer
+          product with its transpose to create a 2D Gaussian filter.
+        </p>
+
+
+        <h4>Gaussian Smoothing</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <img src="./2/1.3/gaussian_blur.png" alt="Gaussian blurred cameraman">
+            <p class="caption">Gaussian blurred image</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.3/blurred_x_derivative.png" alt="X derivative after Gaussian smoothing">
+            <p class="caption">Dx after smoothing</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.3/blurred_y_derivative.png" alt="Y derivative after Gaussian smoothing">
+            <p class="caption">Dy after smoothing</p>
+          </div>
+
+        </div>
+
+
+        <div class="image-grid two-match-three">
+
+          <div class="figure">
+            <img src="./2/1.3/blurred_gradient_magnitude.png" alt="Gradient magnitude after smoothing">
+            <p class="caption">Gradient magnitude after smoothing</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.3/blurred_binary_edges.png" alt="Binary edges after smoothing">
+            <p class="caption">Binary edges, threshold = 20</p>
+          </div>
+
+        </div>
+
+        <p>
+          Compared with the finite difference results from Part 1.2, Gaussian
+          smoothing removes much of the small high-frequency variation before
+          differentiation. The resulting edges are smoother and the binary
+          edge image contains less background texture, while the major
+          outlines of the photographer, camera, and tripod remain visible.
+          I used a threshold of 20 after smoothing because the Gaussian filter
+          reduces the strength of the derivative responses.
+        </p>
+
+
+        <h4>Derivative of Gaussian Filters</h4>
+
+        <p>
+          Instead of first smoothing the image and then taking its derivative,
+          I combined the two operations into a single filter. I convolved the
+          Gaussian filter with <code>Dx</code> and <code>Dy</code> to produce
+          derivative-of-Gaussian filters, then convolved the original cameraman
+          image directly with those filters.
+        </p>
+
+
+        <div class="image-grid two-match-four">
+
+          <div class="figure">
+            <img src="./2/1.3/DoG_x_filter.png" alt="Derivative of Gaussian x filter">
+            <p class="caption">DoG x filter</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.3/DoG_y_filter.png" alt="Derivative of Gaussian y filter">
+            <p class="caption">DoG y filter</p>
+          </div>
+
+        </div>
+
+
+        <div class="image-grid four">
+
+          <div class="figure">
+            <img src="./2/1.3/DoG_x_derivative.png" alt="DoG x derivative">
+            <p class="caption">DoG x derivative</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.3/DoG_y_derivative.png" alt="DoG y derivative">
+            <p class="caption">DoG y derivative</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.3/DoG_gradient_magnitude.png" alt="DoG gradient magnitude">
+            <p class="caption">DoG gradient magnitude</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/1.3/DoG_binary_edges.png" alt="DoG binary edges">
+            <p class="caption">DoG binary edges, threshold = 20</p>
+          </div>
+
+        </div>
+
+        <p>
+          The direct DoG method produces essentially the same result as first
+          applying the Gaussian filter and then applying the finite difference
+          operators. The maximum absolute difference between the two gradient
+          magnitude images was approximately <code>1.67e-13</code>, which is
+          effectively zero apart from floating-point precision.
+        </p>
+
+
+
+        <h3>Part 2.1: Image Sharpening</h3>
+
+        <p>
+          To sharpen an image, I used a Gaussian filter to isolate its
+          low-frequency content. Subtracting the blurred image from the
+          original gives the high-frequency component:
+          <code>high frequencies = image - blurred image</code>.
+          I then added a scaled version of these high frequencies back to
+          the original image:
+          <code>sharpened = image + α(high frequencies)</code>.
+        </p>
+
+        <p>
+          Combining these operations gives
+          <code>sharpened = (1 + α)image - α(blurred image)</code>.
+          This can be written as a single unsharp-mask filter
+          <code>(1 + α)I - αG</code>, where <code>I</code> is the
+          identity filter and <code>G</code> is the Gaussian filter.
+          I used a 9 × 9 Gaussian with σ = 2 and applied the resulting
+          filter independently to each color channel.
+        </p>
+
+
+        <h4>Taj Mahal</h4>
+
+        <div class="image-grid four">
+
+          <div class="figure">
+            <img src="./2/2.1/taj.jpg" alt="Original Taj Mahal">
+            <p class="caption">Original</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/taj_blurred.png" alt="Blurred Taj Mahal">
+            <p class="caption">Gaussian blur</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/taj_high_frequency.png" alt="Taj Mahal high frequencies">
+            <p class="caption">High-frequency component</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/taj_sharpened.png" alt="Sharpened Taj Mahal">
+            <p class="caption">Sharpened, α = 1</p>
+          </div>
+
+        </div>
+
+        <p>
+          The high-frequency image contains the fine edges and details that
+          are removed by the Gaussian blur. For visualization, I shifted the
+          high-frequency values by 128 so that both positive and negative
+          responses can be seen around a middle gray value.
+        </p>
+
+
+        <h4>Varying the Sharpening Amount</h4>
+
+        <div class="image-grid four">
+
+          <div class="figure">
+            <img src="./2/2.1/taj_sharpened_alpha0.5.png" alt="Taj sharpened with alpha 0.5">
+            <p class="caption">α = 0.5</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/taj_sharpened.png" alt="Taj sharpened with alpha 1">
+            <p class="caption">α = 1</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/taj_sharpened_alpha2.png" alt="Taj sharpened with alpha 2">
+            <p class="caption">α = 2</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/taj_sharpened_alpha4.png" alt="Taj sharpened with alpha 4">
+            <p class="caption">α = 4</p>
+          </div>
+
+        </div>
+
+        <p>
+          Increasing α gives more weight to the high-frequency component.
+          At α = 0.5 the sharpening is relatively subtle, while α = 2 and
+          α = 4 make edges and fine details much more pronounced. At the
+          largest value, the sharpening begins to look more exaggerated
+          because high-frequency contrast is being amplified strongly.
+        </p>
+
+
+        <h4>Another Image</h4>
+
+        <div class="image-grid four">
+
+          <div class="figure">
+            <img src="./2/2.1/mypic2.1.jpg" alt="Original scooter image">
+            <p class="caption">Original</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/mine_blurred.png" alt="Blurred scooter image">
+            <p class="caption">Gaussian blur</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/mine_high_frequency.png" alt="Scooter high frequencies">
+            <p class="caption">High-frequency component</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/mine_sharpened.png" alt="Sharpened scooter image">
+            <p class="caption">Sharpened, α = 1</p>
+          </div>
+
+        </div>
+
+        <p>
+          The same process also sharpens my own image. The high-frequency
+          component emphasizes boundaries such as the edges of the scooter,
+          wheels, pavement, and wall, and adding those frequencies back makes
+          those details more pronounced.
+        </p>
+
+
+        <h4>Varying the Sharpening Amount on My Image</h4>
+
+        <div class="image-grid four">
+
+          <div class="figure">
+            <img src="./2/2.1/mine_sharpened_alpha0.5.png" alt="My image sharpened with alpha 0.5">
+            <p class="caption">α = 0.5</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/mine_sharpened.png" alt="My image sharpened with alpha 1">
+            <p class="caption">α = 1</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/mine_sharpened_alpha2.png" alt="My image sharpened with alpha 2">
+            <p class="caption">α = 2</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/mine_sharpened_alpha4.png" alt="My image sharpened with alpha 4">
+            <p class="caption">α = 4</p>
+          </div>
+
+        </div>
+
+        <p>
+          The same pattern appears on my own image. Increasing α strengthens
+          the high-frequency detail, making boundaries and texture more
+          pronounced. The lower values give a subtler sharpening effect,
+          while the larger values produce much stronger edge contrast.
+        </p>
+
+
+        <h4>Blur Then Resharpen</h4>
+
+        <p>
+          To evaluate the method, I started with the original sharp scooter
+          image, deliberately blurred it with a Gaussian filter, and then
+          applied the unsharp mask to the blurred result.
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <img src="./2/2.1/eval_original.png" alt="Original sharp scooter image">
+            <p class="caption">Original sharp image</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/eval_blurred.png" alt="Artificially blurred scooter image">
+            <p class="caption">Blurred image</p>
+          </div>
+
+          <div class="figure">
+            <img src="./2/2.1/eval_resharpened.png" alt="Resharpened scooter image">
+            <p class="caption">Resharpened image</p>
+          </div>
+
+        </div>
+
+        <p>
+          Resharpening strengthens the remaining edges in the blurred image,
+          but it does not fully recover the original sharp image. Information
+          that was removed by the blur cannot be recreated simply by
+          amplifying the frequencies that remain, so the resharpened result
+          still appears softer than the original.
+        </p>
+
+
+
+        <h3>Part 2.2: Hybrid Images</h3>
+
+        <p>
+          [EXPLAIN: Describe combining the low frequencies of one image
+          with the high frequencies of another.]
+        </p>
+
+
+        <h4>Hybrid 1: Derek + Nutmeg</h4>
+
+        <p>
+          [EXPLAIN: State your cutoff frequencies and why you chose them.]
+        </p>
+
+
+        <h4>Original Images</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD DEREK]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD NUTMEG]</p>
+          </div>
+
+        </div>
+
+
+        <h4>Aligned Images</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD ALIGNED DEREK]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD ALIGNED NUTMEG]</p>
+          </div>
+
+        </div>
+
+
+        <h4>Fourier Analysis</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD FFT OF INPUT 1]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FFT OF INPUT 2]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD LOW-PASS RESULT]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FFT OF LOW-PASS RESULT]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD HIGH-PASS RESULT]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FFT OF HIGH-PASS RESULT]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FINAL HYBRID]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FFT OF FINAL HYBRID]</p>
+          </div>
+
+        </div>
+
+
+        <h4>Hybrid 2: [NAME]</h4>
+
+        <p>
+          [EXPLAIN: Briefly describe your image pair and cutoff choices.]
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD INPUT 1]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD INPUT 2]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FINAL HYBRID]</p>
+          </div>
+
+        </div>
+
+
+        <h4>Hybrid 3: [NAME]</h4>
+
+        <p>
+          [EXPLAIN: Briefly describe your image pair and cutoff choices.]
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD INPUT 1]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD INPUT 2]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FINAL HYBRID]</p>
+          </div>
+
+        </div>
+
+
+
+        <h3>Part 2.3: Gaussian and Laplacian Stacks</h3>
+
+        <p>
+          [EXPLAIN: Describe how you constructed the Gaussian stack and
+          the Laplacian stack.]
+        </p>
+
+
+        <h4>Gaussian Stack</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure"><p class="caption">[LEVEL 0]</p></div>
+          <div class="figure"><p class="caption">[LEVEL 1]</p></div>
+          <div class="figure"><p class="caption">[LEVEL 2]</p></div>
+          <div class="figure"><p class="caption">[LEVEL 3]</p></div>
+          <div class="figure"><p class="caption">[LEVEL 4]</p></div>
+
+        </div>
+
+
+        <h4>Laplacian Stack</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure"><p class="caption">[LEVEL 0]</p></div>
+          <div class="figure"><p class="caption">[LEVEL 1]</p></div>
+          <div class="figure"><p class="caption">[LEVEL 2]</p></div>
+          <div class="figure"><p class="caption">[LEVEL 3]</p></div>
+          <div class="figure"><p class="caption">[LEVEL 4]</p></div>
+
+        </div>
+
+
+        <h4>Figure 3.42 Recreation</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure"><p class="caption">(a) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(b) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(c) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(d) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(e) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(f) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(g) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(h) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(i) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(j) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(k) [ADD IMAGE]</p></div>
+          <div class="figure"><p class="caption">(l) [ADD IMAGE]</p></div>
+
+        </div>
+
+
+
+        <h3>Part 2.4: Multiresolution Blending</h3>
+
+        <p>
+          [EXPLAIN: Describe using the Laplacian stacks of the input
+          images and the Gaussian stack of the mask to create the blend.]
+        </p>
+
+
+        <h4>Apple + Orange</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD APPLE]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD ORANGE]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD MASK]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FINAL ORAPLE]</p>
+          </div>
+
+        </div>
+
+
+        <h4>Custom Blend 1: [NAME]</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD INPUT 1]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD INPUT 2]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD MASK]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FINAL BLEND]</p>
+          </div>
+
+        </div>
+
+        <p>
+          [EXPLAIN: Describe this blend.]
+        </p>
+
+
+        <h4>Custom Blend 2: [NAME] — Irregular Mask</h4>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD INPUT 1]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD INPUT 2]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD IRREGULAR MASK]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD FINAL BLEND]</p>
+          </div>
+
+        </div>
+
+        <p>
+          [EXPLAIN: Describe your irregular mask and the resulting blend.]
+        </p>
+
+
+        <h4>Multiresolution Process</h4>
+
+        <p>
+          [EXPLAIN: Show the Laplacian stack process for your favorite
+          blend and the masked input images that produce it.]
+        </p>
+
+        <div class="image-grid three">
+
+          <div class="figure">
+            <p class="caption">[ADD MASKED INPUT 1 STACK]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD MASKED INPUT 2 STACK]</p>
+          </div>
+
+          <div class="figure">
+            <p class="caption">[ADD COMBINED STACK]</p>
+          </div>
+
+        </div>
+
+
+
+        <h3>What I Learned</h3>
+
+        <p>
+          [WRITE: What was the most important thing you learned from this project?]
+        </p>
+
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <script>
+    const sections = document.querySelectorAll(".project");
+    const tabs = document.querySelectorAll(".project-tab");
+
+    function updateActiveProject() {
+      let current = "";
+
+      sections.forEach(section => {
+        const top = section.offsetTop - 160;
+
+        if (window.scrollY >= top) {
+          current = section.id;
+        }
+      });
+
+      tabs.forEach(tab => {
+        tab.classList.remove("active");
+
+        if (tab.getAttribute("href") === "#" + current) {
+          tab.classList.add("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActiveProject);
+    updateActiveProject();
+  </script>
+
+
+  <!-- AUTO PROJECT 1 RESULTS -->
+  <script>
+    async function loadProject1Results() {
+      try {
+        const response = await fetch("./1/offsets.json?v=" + Date.now(), {
+          cache: "no-store"
+        });
+
+        if (!response.ok) return;
+
+        const offsets = await response.json();
+
+        document.querySelectorAll(
+          '#project1 .figure img[src^="./1/"]'
+        ).forEach(img => {
+          const originalSrc = img.getAttribute("src").split("?")[0];
+          const filename = originalSrc.split("/").pop();
+          const imageName = filename.replace("_color.jpg", "");
+
+          // Force browser to show newest output image
+          img.src = originalSrc + "?v=" + Date.now();
+
+          if (!offsets[imageName]) return;
+
+          const caption = img.closest(".figure").querySelector(".caption");
+          const title = caption.innerHTML.split("<br>")[0].trim();
+
+          const green = offsets[imageName].green;
+          const red = offsets[imageName].red;
+
+          caption.innerHTML =
+            title +
+            "<br>Green offset: [" + green[0] + ", " + green[1] + "]" +
+            "<br>Red offset: [" + red[0] + ", " + red[1] + "]";
+        });
+
+      } catch (error) {
+        console.log("Project 1 results are not available yet.");
+      }
+    }
+
+    loadProject1Results();
+  </script>
+
+</body>
+</html>

@@ -101,7 +101,7 @@ body {
 
 .project h2 {
   margin: 0 0 14px;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 500;
 }
 
@@ -111,9 +111,10 @@ body {
   font-weight: 500;
 }
 
-.project-content > p {
-  width: 100%;
+.project p {
+  max-width: 800px;
   margin: 0 0 16px;
+
   font-size: 16px;
   line-height: 1.55;
 }
@@ -140,13 +141,11 @@ body {
 }
 
 .caption {
-  width: 100%;
-  margin: 6px 0 16px;
-  padding: 0;
+  margin-top: 6px;
+
   color: #47677D;
-  font-size: 16px;
-  line-height: 1.55;
-  text-align: left;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 
@@ -265,4 +264,181 @@ body {
 
 .dolly-zoom {
   width: 260px;
+}
+
+.image-grid.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.image-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.image-grid.two-match-three {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.image-grid.two-match-three .figure {
+  flex: 0 0 calc((100% - 40px) / 3);
+}
+
+.image-grid.two-match-four {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.image-grid.two-match-four .figure {
+  flex: 0 0 calc((100% - 60px) / 4);
+}
+
+.project p {
+  max-width: none !important;
+}
+
+#project2 .derek-row .figure img {
+  height: 240px;
+  object-fit: contain;
+  object-position: center;
+}
+
+#project2 .derek-row {
+  grid-template-columns: repeat(3, 180px);
+  gap: 16px;
+  justify-content: center;
+}
+
+#project2 .derek-row .figure {
+  width: 180px;
+}
+
+#project2 .derek-row .figure img {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+#project2 .derek-row .caption {
+  width: 180px;
+}
+
+/* Restore Derek + Nutmeg image sizing */
+#project2 .derek-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  justify-content: initial;
+}
+
+#project2 .derek-row .figure {
+  width: auto;
+}
+
+#project2 .derek-row .figure img {
+  width: 100%;
+  height: 240px;
+  object-fit: contain;
+  object-position: center;
+  margin: 0;
+}
+
+#project2 .derek-row .caption {
+  width: auto;
+  text-align: center;
+}
+
+/* Smaller Fourier Analysis figures */
+#project2 .fft-two {
+  grid-template-columns: repeat(2, 230px);
+  justify-content: center;
+  gap: 20px;
+}
+
+#project2 .fft-three {
+  grid-template-columns: repeat(3, 230px);
+  justify-content: center;
+  gap: 20px;
+}
+
+@media (max-width: 700px) {
+  #project2 .fft-two,
+  #project2 .fft-three {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* PART 2.3 */
+
+.image-grid.six {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.image-grid.six .caption {
+  font-size: 12px;
+}
+
+.image-grid.figure342 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 700px) {
+  .image-grid.six,
+  .image-grid.figure342 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.convolution-code-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.convolution-code-grid > div {
+  min-width: 0;
+}
+
+.convolution-code-grid pre {
+  width: 100%;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+}
+
+@media (max-width: 700px) {
+  .convolution-code-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.convolution-code-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 24px;
+  width: 100%;
+  align-items: start;
+}
+
+.convolution-code-column {
+  min-width: 0;
+}
+
+.convolution-code-column pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  width: 100%;
+  margin: 0;
 }
