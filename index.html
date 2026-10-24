@@ -20,6 +20,7 @@
       <a href="#project0" class="project-tab active">Project 0</a>
       <a href="#project1" class="project-tab">Project 1</a>
       <a href="#project2" class="project-tab">Project 2</a>
+        <a href="#project3" class="project-tab">Project 3</a>
     </nav>
 
     <section class="project" id="project0">
@@ -1367,6 +1368,320 @@ self_y = convolve_two_loops(self_image, D_y)</code></pre>
 
       </div>
     </section>
+
+
+<section class="project" id="project3">
+  <div class="project-content">
+
+    <h2>Project 3: Flow Matching</h2>
+
+    <h3>Part A: Exploring the Power of Flow Models</h3>
+
+    <h3>1. Visualizing Training and Sampling</h3>
+
+    <h4>1.1 Constructing Noisy Training Inputs</h4>
+
+<div class="figure">
+  <img src="./3/parta/1_1_training_inputs.png" alt="Forward process">
+  <p class="caption">Left to right: original image, t = 0.25, t = 0.50, t = 0.75</p>
+</div>
+
+    <h4>1.2 Classical Denoising</h4>
+
+<div class="image-grid three">
+
+  <div class="figure">
+    <img src="./3/parta/1_2_t025.png" alt="Classical denoising at t 0.25">
+    <p class="caption">t = 0.25: noisy input on the left, Gaussian denoised result on the right</p>
+  </div>
+
+  <div class="figure">
+    <img src="./3/parta/1_2_t050.png" alt="Classical denoising at t 0.50">
+    <p class="caption">t = 0.50: noisy input on the left, Gaussian denoised result on the right</p>
+  </div>
+
+  <div class="figure">
+    <img src="./3/parta/1_2_t075.png" alt="Classical denoising at t 0.75">
+    <p class="caption">t = 0.75: noisy input on the left, Gaussian denoised result on the right</p>
+  </div>
+
+</div>
+
+    <h4>1.3 One-Step Denoising</h4>
+
+<div class="figure">
+  <img src="./3/parta/1_3_t025.png" alt="One step denoising at t 0.25">
+  <p class="caption">t = 0.25: original, noisy input, one step estimate</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/1_3_t050.png" alt="One step denoising at t 0.50">
+  <p class="caption">t = 0.50: original, noisy input, one step estimate</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/1_3_t075.png" alt="One step denoising at t 0.75">
+  <p class="caption">t = 0.75: original, noisy input, one step estimate</p>
+</div>
+
+    <h4>1.4 Visualizing Velocity</h4>
+
+<div class="image-grid three">
+  <div class="figure">
+    <img src="./3/parta/1_4_original.png" alt="Original image for velocity visualization">
+    <p class="caption">Original image used for the velocity comparisons</p>
+  </div>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/1_4_t025.png" alt="Velocity visualization at t 0.25">
+  <p class="caption">t = 0.25: noisy image, predicted update, ground truth update, RGB RMS error</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/1_4_t050.png" alt="Velocity visualization at t 0.50">
+  <p class="caption">t = 0.50: noisy image, predicted update, ground truth update, RGB RMS error</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/1_4_t075.png" alt="Velocity visualization at t 0.75">
+  <p class="caption">t = 0.75: noisy image, predicted update, ground truth update, RGB RMS error</p>
+</div>
+
+    <h4>1.5 Iterative Denoising with Euler Sampling</h4>
+
+<div class="figure">
+  <img src="./3/parta/1_5_trajectory.png" alt="Euler denoising trajectory">
+  <p class="caption">Euler trajectory: top row t = 0.50, 0.60, 0.70, bottom row t = 0.80, 0.90, 1.00</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/1_5_comparison.png" alt="Denoising method comparison">
+  <p class="caption">Left to right: original, Gaussian blur, one-step estimate, Euler denoising</p>
+</div>
+
+      <p>Both learned methods work much better than the Gaussian blur, which still has a lot of noise and loses detail. The one step result is already close to the original, while Euler sampling preserves more of the original detail and gives the closest overall result.</p>
+
+    <h4>1.6 Generating Images from Noise</h4>
+
+<div class="figure">
+  <img src="./3/parta/1_6_samples.png" alt="Generated samples from noise">
+  <p class="caption">Prompt: "a high quality photo", seeds 180 through 184, ordered left to right and then onto the second row</p>
+</div>
+
+      <p>All five samples ended up being people even though the prompt was just “a high quality photo.” Some look more realistic than others, but the model clearly seems to favor portraits for such a general prompt.</p>
+
+    <h3>2. Conditional Generation and Guidance</h3>
+
+    <h4>2.1 Classifier-Free Guidance</h4>
+
+<div class="figure">
+  <img src="./3/parta/2_1_cfg_samples.png" alt="Classifier free guidance samples">
+  <p class="caption">Prompt: "a high quality photo", CFG weight w = 7, seeds 180 through 184 using the same initial noises as Section 1.6</p>
+</div>
+
+      <p>The CFG samples look noticeably cleaner than the ones from Section 1.6. The faces are less distorted and the images look more realistic overall, although the results are still mostly similar portraits.</p>
+
+    <h3>3. Creative Applications</h3>
+
+    <h4>3.1 Image-to-Image Editing</h4>
+
+<div class="figure">
+  <img src="./3/parta/3_1_campanile.png" alt="Campanile image editing">
+  <p class="caption">Campanile: original followed by starting times t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/3_1_own1.png" alt="First own image editing">
+  <p class="caption">Own image 1: original followed by starting times t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/3_1_own2.png" alt="Second own image editing">
+  <p class="caption">Own image 2: original followed by starting times t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/3_1_web.png" alt="Web image editing">
+  <p class="caption">Web image: original followed by starting times t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/3_1_drawing1.png" alt="First hand drawn image editing">
+  <p class="caption">Hand drawn image 1: original followed by starting times t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/3_1_drawing2.png" alt="Second hand drawn image editing">
+  <p class="caption">Hand drawn image 2: original followed by starting times t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+    <h4>3.2 Text-Guided Image Editing</h4>
+
+<div class="figure">
+  <img src="./3/parta/3_2_campanile.png" alt="Text guided Campanile editing">
+  <p class="caption">Campanile, prompt: "a photograph of a stone tower covered in ivy" — original followed by t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/3_2_own1.png" alt="First text guided own image">
+  <p class="caption">Own image 1, prompt: "a photograph of a gingerbread house covered in candy" — original followed by t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+<div class="figure">
+  <img src="./3/parta/3_2_own2.png" alt="Second text guided own image">
+  <p class="caption">Own image 2, prompt: "a photograph of a bouquet made of colorful butterflies" — original followed by t = 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</p>
+</div>
+
+    <h4>3.3 Visual Anagrams</h4>
+
+<div class="image-grid two-match-three">
+
+  <div class="figure">
+    <img src="./3/parta/3_3_anagram1.png" alt="Old man and campfire visual anagram">
+    <p class="caption">Upright: "an oil painting of an old man", rotated 180°: "an oil painting of people around a campfire"</p>
+  </div>
+
+  <div class="figure">
+    <img src="./3/parta/3_3_anagram2.png" alt="Village and horse visual anagram">
+    <p class="caption">Upright: "a lithograph of a snowy mountain village", rotated 180°: "a lithograph of a horse"</p>
+  </div>
+
+</div>
+
+    <h4>3.4 Hybrid Images</h4>
+
+<div class="image-grid two-match-four">
+
+  <div class="figure">
+    <img src="./3/parta/3_4_hybrid1.png" alt="Waterfall skull hybrid">
+    <p class="caption">Close, high frequency: "a lithograph of a waterfall", distant, low frequency: "a lithograph of a skull"</p>
+  </div>
+
+  <div class="figure">
+    <img src="./3/parta/3_4_hybrid2.png" alt="Forest cat hybrid">
+    <p class="caption">Close, high frequency: "a lithograph of a forest", distant, low frequency: "a lithograph of a cat"</p>
+  </div>
+
+</div>
+
+    
+      <h3>Part B: Flow Matching from Scratch</h3>
+
+      <h4>1.2 Using the UNet to Train a Denoiser</h4>
+
+      <div class="figure">
+        <img src="3/partb/1_2_noising.png" alt="Noising process">
+        <p class="caption">Noising process for σ = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, and 1.0.</p>
+      </div>
+
+      <h4>1.2.1 Training</h4>
+
+      <div class="figure" style="max-width: 650px; margin: 20px auto 30px;">
+          <img src="3/partb/1_2_1_loss.png" alt="Single step denoising training loss">
+        <p class="caption">Training loss for the single step denoiser with σ = 0.5.</p>
+      </div>
+
+      <div class="image-grid two-match-three">
+        <div class="figure">
+          <img src="3/partb/1_2_1_epoch1.png" alt="Single step denoising after epoch 1">
+          <p class="caption">Epoch 1: clean images, noisy inputs, and predictions.</p>
+        </div>
+
+        <div class="figure">
+          <img src="3/partb/1_2_1_epoch5.png" alt="Single step denoising after epoch 5">
+          <p class="caption">Epoch 5: clean images, noisy inputs, and predictions.</p>
+        </div>
+      </div>
+
+      <h4>1.2.2 Out of Distribution Testing</h4>
+
+      <div class="figure">
+        <img src="3/partb/1_2_2_ood.png" alt="Out of distribution denoising results">
+        <p class="caption">The same test image with σ = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, and 1.0.</p>
+      </div>
+
+      <h4>1.2.3 Denoising Pure Noise</h4>
+
+      <div class="figure">
+        <img src="3/partb/1_2_3_epoch1.png" alt="Pure noise results after epoch 1">
+          <p class="caption">Samples after epoch 1</p>
+      </div>
+
+      <div class="figure">
+        <img src="3/partb/1_2_3_epoch5.png" alt="Pure noise results after epoch 5">
+          <p class="caption">Samples after epoch 5</p>
+      </div>
+
+      <div class="figure" style="max-width: 650px; margin: 20px auto 30px;">
+          <img src="3/partb/1_2_3_loss.png" alt="Pure noise training loss">
+        <p class="caption">Training loss for denoising pure noise.</p>
+      </div>
+
+      <p>The outputs all look like very similar blurry digit shapes instead of different clear numbers. Since the input is just random noise, there is nothing telling the model which digit it should produce. With MSE loss, it ends up learning something close to the average of the training images instead.</p>
+
+      <h4>2.2 Training the Time Conditioned UNet</h4>
+
+      <div class="figure" style="max-width: 650px; margin: 20px auto 30px;">
+          <img src="3/partb/2_2_loss.png" alt="Time conditioned UNet training loss">
+        <p class="caption">Training loss for the time conditioned UNet.</p>
+      </div>
+
+      <h4>2.3 Sampling from the Time Conditioned UNet</h4>
+
+      <div class="image-grid three">
+        <div class="figure">
+          <img src="3/partb/2_3_epoch1.png" alt="Time conditioned samples after epoch 1">
+          <p class="caption">Epoch 1</p>
+        </div>
+
+        <div class="figure">
+          <img src="3/partb/2_3_epoch5.png" alt="Time conditioned samples after epoch 5">
+          <p class="caption">Epoch 5</p>
+        </div>
+
+        <div class="figure">
+          <img src="3/partb/2_3_epoch10.png" alt="Time conditioned samples after epoch 10">
+          <p class="caption">Epoch 10</p>
+        </div>
+      </div>
+
+      <h4>2.5 Training the Class Conditioned UNet</h4>
+
+      <div class="figure" style="max-width: 650px; margin: 20px auto 30px;">
+          <img src="3/partb/2_5_loss.png" alt="Class conditioned UNet training loss">
+        <p class="caption">Training loss for the class conditioned UNet.</p>
+      </div>
+
+      <h4>2.6 Sampling from the Class Conditioned UNet</h4>
+
+      <div class="image-grid three">
+        <div class="figure">
+          <img src="3/partb/2_6_epoch1.png" alt="Class conditioned samples after epoch 1">
+          <p class="caption">Epoch 1, four instances of each digit.</p>
+        </div>
+
+        <div class="figure">
+          <img src="3/partb/2_6_epoch5.png" alt="Class conditioned samples after epoch 5">
+          <p class="caption">Epoch 5, four instances of each digit.</p>
+        </div>
+
+        <div class="figure">
+          <img src="3/partb/2_6_epoch10.png" alt="Class conditioned samples after epoch 10">
+          <p class="caption">Epoch 10, four instances of each digit.</p>
+        </div>
+      </div>
+
+      <div class="figure">
+        <img src="3/partb/2_6_no_scheduler.png" alt="Class conditioned samples without a scheduler">
+        <p class="caption">Epoch 10 without the exponential learning rate scheduler.</p>
+      </div>
+
+      <p>I removed the exponential learning rate scheduler and lowered the learning rate from 1e-2 to a constant 1e-3. The final samples are still clean and class specific, and they look comparable to the results from the model trained with the scheduler.</p>
+
+</div>
+</section>
+
 
   </main>
 
