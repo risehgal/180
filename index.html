@@ -1683,6 +1683,281 @@ self_y = convolve_two_loops(self_image, D_y)</code></pre>
 </section>
 
 
+  
+
+<section class="project" id="project4">
+  <div class="project-content">
+
+    <h2>Project 4: Image Warping and Mosaicing</h2>
+
+    <h3>Part A: Image Warping and Mosaicing</h3>
+
+
+    <h4>A.1 Shoot the Pictures</h4>
+
+    <p>
+      I used two image pairs for this section: Moffitt and a room with two doors. Each pair has overlapping views with shared features that I could use as corresponding points.
+    </p>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/room1.jpg" alt="Room image 1">
+        <p class="caption">Room image 1</p>
+      </div>
+      <div class="figure">
+        <img src="./4/room2.jpg" alt="Room image 2">
+        <p class="caption">Room image 2</p>
+      </div>
+    </div>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/building1.jpeg" alt="Moffitt image 1">
+        <p class="caption">Moffitt image 1</p>
+      </div>
+      <div class="figure">
+        <img src="./4/building2.jpeg" alt="Moffitt image 2">
+        <p class="caption">Moffitt image 2</p>
+      </div>
+    </div>
+
+
+    <h4>A.2 Recover Homographies</h4>
+
+    <p>
+      I picked eight corresponding points in each image pair using Matplotlib’s ginput. I clicked the same features in the same order in both images, then used those points in computeH(im1_pts, im2_pts) to find the homography that maps image 1 into image 2.
+    </p>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/results/room1_points.png" alt="Room image 1 correspondences">
+        <p class="caption">Room image 1 correspondences</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/room2_points.png" alt="Room image 2 correspondences">
+        <p class="caption">Room image 2 correspondences</p>
+      </div>
+    </div>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/results/building1_points.png" alt="Moffitt image 1 correspondences">
+        <p class="caption">Moffitt image 1 correspondences</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/building2_points.png" alt="Moffitt image 2 correspondences">
+        <p class="caption">Moffitt image 2 correspondences</p>
+      </div>
+    </div>
+
+    <p>
+      I fixed the bottom right entry of H to 1, which leaves eight unknown values. For a point (x, y) in image 1 and its match (x′, y′) in image 2:
+    </p>
+
+    <p>
+      x′ = (h11·x + h12·y + h13) / (h31·x + h32·y + 1)<br>
+      y′ = (h21·x + h22·y + h23) / (h31·x + h32·y + 1)
+    </p>
+
+    <p>
+      Rearranging these gives two linear equations for each correspondence:
+    </p>
+
+    <p>
+      x·h11 + y·h12 + h13 − x·x′·h31 − y·x′·h32 = x′<br>
+      x·h21 + y·h22 + h23 − x·y′·h31 − y·y′·h32 = y′
+    </p>
+
+    <p>
+      Each point pair contributes these two rows to A:
+    </p>
+
+    <p>
+      [x, y, 1, 0, 0, 0, −x·x′, −y·x′]<br>
+      [0, 0, 0, x, y, 1, −x·y′, −y·y′]
+    </p>
+
+    <p>
+      The matching entries in b are x′ and y′.
+    </p>
+
+    <p>
+      With eight correspondences, A has size 16 × 8 and b has length 16. Since this gives more equations than unknowns, I solved Ah = b with np.linalg.lstsq. I then added the fixed value 1 and reshaped the result into the 3 × 3 homography matrix.
+    </p>
+
+    <p>
+      The recovered Moffitt homography maps building image 1 into building image 2:
+    </p>
+
+    <p>
+      H = [<br>
+      &nbsp;&nbsp;[1.68574613, −0.0227506519, −3228.65244],<br>
+      &nbsp;&nbsp;[0.269699817, 1.45103623, −1123.68145],<br>
+      &nbsp;&nbsp;[0.000117492956, 0.00000185191664, 1]<br>
+      ]
+    </p>
+
+    <p>
+      The recovered room homography maps room image 1 into room image 2:
+    </p>
+
+    <p>
+      H = [<br>
+      &nbsp;&nbsp;[1.19885471, −0.0485880325, −1622.40056],<br>
+      &nbsp;&nbsp;[0.0946041487, 1.08670647, −314.756449],<br>
+      &nbsp;&nbsp;[0.0000340513111, −0.00000645056933, 1]<br>
+      ]
+    </p>
+
+
+    <h4>A.3 Warp the Images</h4>
+
+    <p>
+      I implemented nearest neighbor and bilinear warping using inverse warping. I first transform the four corners of the image with H to figure out the bounds of the warped result. I use those bounds to create the output image.
+    </p>
+
+    <p>
+      For every pixel in the output, I apply H⁻¹ to find where it came from in the original image. This avoids the holes that can happen with forward warping. I also return a mask that keeps track of which output pixels actually contain image data.
+    </p>
+
+    <p>
+      For nearest neighbor, I round the source coordinates and copy the closest pixel. For bilinear interpolation, I use the four surrounding pixels:
+    </p>
+
+    <p>
+      x0 = floor(x), y0 = floor(y)<br>
+      x1 = min(x0 + 1, width − 1), y1 = min(y0 + 1, height − 1)<br>
+      dx = x − x0, dy = y − y0
+    </p>
+
+    <p>
+      I(x, y) = (1 − dx)(1 − dy)I[y0, x0] + dx(1 − dy)I[y0, x1] + (1 − dx)dyI[y1, x0] + dx·dy·I[y1, x1]
+    </p>
+
+    <p>
+      I tested the warping with two rectifications. For the shoebox, I selected the four corners of the lid and mapped them to a 1400 by 1130 rectangle to keep its measured 14:11.3 proportions. For the scale, I mapped its four corners to a 1000 by 1000 square. The whole image is warped along with the selected object, which is why the surrounding floor changes shape too.
+    </p>
+
+    <div class="image-grid three">
+      <div class="figure">
+        <img src="./4/shoebox.jpg" alt="Original shoebox">
+        <p class="caption">Original shoebox</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/shoebox_nn.png" alt="Shoebox nearest neighbor rectification">
+        <p class="caption">Nearest neighbor</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/shoebox_bilinear.png" alt="Shoebox bilinear rectification">
+        <p class="caption">Bilinear</p>
+      </div>
+    </div>
+
+    <div class="image-grid three">
+      <div class="figure">
+        <img src="./4/scale.jpg" alt="Original scale">
+        <p class="caption">Original scale</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/scale_nn.png" alt="Scale nearest neighbor rectification">
+        <p class="caption">Nearest neighbor</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/scale_bilinear.png" alt="Scale bilinear rectification">
+        <p class="caption">Bilinear</p>
+      </div>
+    </div>
+
+    <p>
+      Both methods give the same overall geometry. The shoebox becomes rectangular and the scale becomes approximately square. At the full image size, the difference between the two methods is very subtle. When zooming in on the Timberland logo and the “Vitafit” text, nearest neighbor has slightly more jagged, pixelated edges, while bilinear produces smoother edges.
+    </p>
+
+    <p>
+      Nearest neighbor is faster because it only copies one pixel for each output location. Bilinear uses four pixels and computes weights between them, so it takes more work but gives a smoother result.
+    </p>
+
+
+    <h4>A.4 Blend the Images into a Mosaic</h4>
+
+    <p>
+      I made three mosaics using the Moffitt, room, and Cal poster image pairs. For each one, I kept image 2 fixed and warped image 1 into its perspective using the homography and bilinear interpolation.
+    </p>
+
+    <p>
+      I found the size of the shared canvas using the warped corners of image 1 together with the bounds of image 2. I then placed both images onto separate canvases at the correct offsets.
+    </p>
+
+    <p>
+      To blend the overlap, I used the masks from each image with scipy.ndimage.distance_transform_edt. Pixels farther from the edge of an image get larger weights, while pixels near the edge get smaller weights. I then combine the two images with:
+    </p>
+
+    <p>
+      mosaic = (weights1 · canvas1 + weights2 · canvas2) / (weights1 + weights2)
+    </p>
+
+    <p>
+      If only one image covers a pixel, that image is kept. In the overlap, the two images are blended based on their weights, which makes the transition between them gradual. Pixels that are not covered by either image stay black.
+    </p>
+
+    <p><strong>Moffitt Mosaic</strong></p>
+
+    <div class="image-grid three">
+      <div class="figure">
+        <img src="./4/building1.jpeg" alt="Moffitt source image 1">
+        <p class="caption">Source image 1</p>
+      </div>
+      <div class="figure">
+        <img src="./4/building2.jpeg" alt="Moffitt source image 2">
+        <p class="caption">Source image 2</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/building_mosaic.png" alt="Moffitt mosaic">
+        <p class="caption">Mosaic</p>
+      </div>
+    </div>
+
+    <p><strong>Room Mosaic</strong></p>
+
+    <div class="image-grid three">
+      <div class="figure">
+        <img src="./4/room1.jpg" alt="Room source image 1">
+        <p class="caption">Source image 1</p>
+      </div>
+      <div class="figure">
+        <img src="./4/room2.jpg" alt="Room source image 2">
+        <p class="caption">Source image 2</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/room_mosaic.png" alt="Room mosaic">
+        <p class="caption">Mosaic</p>
+      </div>
+    </div>
+
+    <p><strong>Cal Poster Mosaic</strong></p>
+
+    <div class="image-grid three">
+      <div class="figure">
+        <img src="./4/cal1.jpg" alt="Cal source image 1">
+        <p class="caption">Source image 1</p>
+      </div>
+      <div class="figure">
+        <img src="./4/cal2.jpg" alt="Cal source image 2">
+        <p class="caption">Source image 2</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results/cal_mosaic.png" alt="Cal mosaic">
+        <p class="caption">Mosaic</p>
+      </div>
+    </div>
+
+    <p>
+      The Moffitt mosaic combines the seating area, purple wall, and meeting rooms into a wider view. The room mosaic combines the two door views, and the Cal mosaic combines the poster wall with the doorway and air conditioner. The feathering gives smooth transitions across the overlapping areas. The black borders are parts of the canvas that neither image covers.
+    </p>
+
+  </div>
+</section>
+
+
   </main>
 
 
