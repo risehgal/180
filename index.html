@@ -21,6 +21,7 @@
       <a href="#project1" class="project-tab">Project 1</a>
       <a href="#project2" class="project-tab">Project 2</a>
         <a href="#project3" class="project-tab">Project 3</a>
+        <a href="#project4" class="project-tab">Project 4</a>
     </nav>
 
     <section class="project" id="project0">
@@ -1954,7 +1955,110 @@ self_y = convolve_two_loops(self_image, D_y)</code></pre>
       The Moffitt mosaic combines the seating area, purple wall, and meeting rooms into a wider view. The room mosaic combines the two door views, and the Cal mosaic combines the poster wall with the doorway and air conditioner. The feathering gives smooth transitions across the overlapping areas. The black borders are parts of the canvas that neither image covers.
     </p>
 
-  </div>
+  
+
+
+    <h3>Part B: Feature Matching for Autostitching</h3>
+
+
+    <h4>B.1 Harris Corner Detection</h4>
+
+    <p>
+      I started with the provided Harris corner detector to find candidate corners in the Moffitt image. I then used Adaptive Non-Maximal Suppression to reduce these to 500 points. For each corner, I compute a suppression radius based on nearby stronger corners and keep the points with the largest radii. This gives a more spread out set of features across the image.
+    </p>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/results_b/building_harris.png" alt="Harris corners">
+        <p class="caption">Harris corners</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results_b/building_anms.png" alt="Harris corners after ANMS">
+        <p class="caption">Corners after ANMS</p>
+      </div>
+    </div>
+
+
+    <h4>B.2 Feature Descriptor Extraction</h4>
+
+    <p>
+      For each selected corner, I take a 40 by 40 grayscale patch centered at the point and resize it to 8 by 8. I normalize each descriptor by subtracting its mean and dividing by its standard deviation. These normalized patches give a small representation of the image around each feature.
+    </p>
+
+    <div class="figure" style="max-width: 650px; margin: 20px auto 30px;">
+      <img src="./4/results_b/building_descriptors.png" alt="Extracted feature descriptors">
+      <p class="caption">Examples of normalized 8 × 8 feature descriptors</p>
+    </div>
+
+
+    <h4>B.3 Feature Matching</h4>
+
+    <p>
+      I matched descriptors by computing the SSD between each feature in image 1 and every feature in image 2. For each feature, I find its closest and second closest matches. I keep the match when the distance to the closest descriptor is less than 0.5 times the distance to the second closest descriptor. The same match numbers are shown on both images below.
+    </p>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/results_b/building1_matches.png" alt="Matched features in Moffitt image 1">
+        <p class="caption">Matched features in Moffitt image 1</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results_b/building2_matches.png" alt="Matched features in Moffitt image 2">
+        <p class="caption">Matched features in Moffitt image 2</p>
+      </div>
+    </div>
+
+
+    <h4>B.4 RANSAC for Robust Homography</h4>
+
+    <p>
+      I used 4 point RANSAC to find a homography from the automatically matched features. For each of 5000 iterations, I randomly choose four matches, compute a homography, and use it to project the remaining points. A match is counted as an inlier when its projected point is within 3 pixels of its matching point. I keep the set with the most inliers and recompute the final homography using all of those inliers.
+    </p>
+
+    <p>
+      I then used the same mosaicing and blending procedure from Part A with the homography found automatically by RANSAC. Below, I compare the manually stitched and automatically stitched results for the same three image pairs.
+    </p>
+
+    <p><strong>Moffitt Mosaic</strong></p>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/results/building_mosaic.png" alt="Manually stitched Moffitt mosaic">
+        <p class="caption">Manual stitching</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results_b/building_mosaic_auto.png" alt="Automatically stitched Moffitt mosaic">
+        <p class="caption">Automatic stitching</p>
+      </div>
+    </div>
+
+    <p><strong>Room Mosaic</strong></p>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/results/room_mosaic.png" alt="Manually stitched room mosaic">
+        <p class="caption">Manual stitching</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results_b/room_mosaic_auto.png" alt="Automatically stitched room mosaic">
+        <p class="caption">Automatic stitching</p>
+      </div>
+    </div>
+
+    <p><strong>Cal Poster Mosaic</strong></p>
+
+    <div class="image-grid two-match-three">
+      <div class="figure">
+        <img src="./4/results/cal_mosaic.png" alt="Manually stitched Cal poster mosaic">
+        <p class="caption">Manual stitching</p>
+      </div>
+      <div class="figure">
+        <img src="./4/results_b/cal_mosaic_auto.png" alt="Automatically stitched Cal poster mosaic">
+        <p class="caption">Automatic stitching</p>
+      </div>
+    </div>
+
+</div>
 </section>
 
 
